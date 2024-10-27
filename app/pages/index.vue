@@ -10,8 +10,21 @@
 					placeholder="Ort"
 					@keydown.enter="updatePlace"
 				/>
-				<button @click="updatePlace">Start</button>
+				<button @click="updatePlace" class="start">Start</button>
 				<!-- <button @click="updateWeather">UpdateWeather</button> -->
+			</div>
+			<div class="options" v-show="multi">
+				<h2>Welchen Ort meinst du?</h2>
+				<button
+					v-for="res in results"
+					@click="chooseOption"
+					:key="res.place_id"
+					:data-lat="res.lat"
+					:data-long="res.lon"
+					:data-display="res.display_name"
+				>
+					{{ res.display_name }}
+				</button>
 			</div>
 			<div class="error" v-show="localError">
 				<p>Etwas ist schiefgelaufen. Bitte versuch es noch einmal</p>
@@ -19,7 +32,6 @@
 		</div>
 		<div class="current" :key="current" v-show="!localError">
 			<!-- {{ results }} -->
-			<button v-for="res in results">{{ res.display_name }}</button>
 			<div class="current__card">
 				<div class="icon__box">
 					<span v-if="current.weathercode == 0"
@@ -69,7 +81,8 @@
 					</span>
 				</div>
 
-				<h3>{{ capitalizeFLetter(place) }}, {{ weekday[0] }}</h3>
+				<h3>{{ displayName }}</h3>
+				<h4>{{ weekday[0] }}</h4>
 				<Icon :name="weather" />
 				<p>
 					Aktuelle Temperatur:
@@ -177,28 +190,16 @@ import { ref, computed } from "vue";
 // const weather = ref("typcn:weather-stormy");
 const place = ref("Sidney");
 const results = ref(null);
+const multi = ref(false);
 const localError = ref();
 
+const displayName = ref("Sidney");
 const current = ref();
 const daily = ref();
 const weekday = ref([]);
-const testData = ref("Mailand");
-// !Nominatim Test
-const { data: nominatim } = await useFetch(
-	`https://nominatim.openstreetmap.org/search?q=${testData.value}&format=json`
-);
 
 //! Variablen Geocoding API
-const myAPIKey = "3d7c7e17fd7546c387972536870bb831";
 
-const geoUrl = computed(() => {
-	return (
-		"https://api.geoapify.com/v1/geocode/search?text=" +
-		place.value +
-		"&lang=en&limit=10&type=city&apiKey=" +
-		myAPIKey
-	);
-});
 const NOMINATIM_BASE_URL = computed(() => {
 	return (
 		"https://nominatim.openstreetmap.org/search?q=" +
@@ -255,8 +256,8 @@ const parseWeatherData = function (fetchData) {
 	daily.value = fetchData.daily;
 };
 //! Startdaten für 1. Rendern
-const latitude = ref(22.5205939659987);
-const longitude = ref(22.5205939659987);
+const latitude = ref(-33.87403366301516);
+const longitude = ref(151.19970227627627);
 
 // ! Initial Call Wetter-Api
 const {
@@ -276,14 +277,27 @@ const onClickFetch = async (e) => {
 		const data = await $fetch("/api/error");
 	} catch (error) {
 		myError.value = error;
-		c;
 	}
 };
+// !multiple places
+const chooseOption = async function ($event) {
+	console.log($event.target);
+	console.log($event.target.getAttribute("data-lat"));
+	// console.log($event.target.long);
+	console.log(results.value);
+	latitude.value = $event.target.getAttribute("data-lat");
+	longitude.value = $event.target.getAttribute("data-long");
+	const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`).catch((error) => {
+		error.data;
+	});
+
+	parseWeatherData(dataFetch);
+	multi.value = false;
+	displayName.value = $event.target.getAttribute("data-display");
+};
 // ! Update Long und Lat
-const updatePlace = async function () {
+const updatePlace = async function ($event) {
 	localError.value = null;
-	console.log(NOMINATIM_BASE_URL.value);
-	console.log(place.value);
 	const newPLaceNomiData = await $fetch(`${NOMINATIM_BASE_URL.value}`).catch(
 		(error) => {
 			error.data;
@@ -297,8 +311,16 @@ const updatePlace = async function () {
 		localError.value = true;
 		return;
 	}
+	if (results.value.length > 1) {
+		multi.value = true;
+
+		// console.log($event.target);
+
+		return;
+	}
 	latitude.value = newPLaceNomiData[0].lat;
 	longitude.value = newPLaceNomiData[0].lon;
+	displayName.value = newPLaceNomiData[0].display_name;
 	const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`).catch((error) => {
 		error.data;
 	});
@@ -380,6 +402,7 @@ const updatePlace = async function () {
 	flex-wrap: wrap;
 	gap: 2rem;
 	align-items: center;
+	justify-content: center;
 }
 .error {
 	margin-top: 2rem;
@@ -390,11 +413,25 @@ input {
 	padding: 0.5rem 1rem;
 }
 button {
-	background-color: #4c5930;
 	color: inherit;
 	border-radius: 50px;
 	border: none;
 	padding: 0.5rem 1rem;
 	cursor: pointer;
+}
+.start {
+	background-color: #4c5930;
+}
+.options {
+	display: grid;
+	place-content: center;
+	text-align: center;
+	margin: auto;
+	padding-block: 2rem;
+}
+.options button {
+	background-color: transparent;
+	border: 1px solid #fcf7f0;
+	margin: 0.5rem;
 }
 </style>
