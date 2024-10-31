@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="search-bar">
+		<div class="search-bar bg-orangered text-cream">
 			<div class="form">
 				<label for="place">Suche nach Ort</label>
 				<input
@@ -9,9 +9,9 @@
 					v-model="place"
 					placeholder="Ort"
 					@keydown.enter="updatePlace"
+					class="text-green-dark"
 				/>
-				<button @click="updatePlace" class="start">Start</button>
-				<!-- <button @click="updateWeather">UpdateWeather</button> -->
+				<button @click="updatePlace" class="start bg-green-dark">Start</button>
 			</div>
 			<div class="options" v-show="multi">
 				<h2>Welchen Ort meinst du?</h2>
@@ -30,158 +30,17 @@
 				<p>Etwas ist schiefgelaufen. Bitte versuch es noch einmal</p>
 			</div>
 		</div>
-		<div class="current" :key="current" v-show="!localError">
+		<div class="current bg-green-light" :key="current" v-show="!localError">
 			<!-- {{ results }} -->
-			<div class="current__card">
-				<div class="icon__box">
-					<span v-if="current.weathercode == 0"
-						><svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="1em"
-							height="1em"
-							viewBox="0 0 24 24"
-						>
-							<path
-								fill="currentColor"
-								d="M12 2a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 12 2m5 10a5 5 0 1 1-10 0a5 5 0 0 1 10 0m4.25.75a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5zM12 19a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 12 19m-7.75-6.25a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5zm-.03-8.53a.75.75 0 0 1 1.06 0l1.5 1.5a.75.75 0 0 1-1.06 1.06l-1.5-1.5a.75.75 0 0 1 0-1.06m1.06 15.56a.75.75 0 1 1-1.06-1.06l1.5-1.5a.75.75 0 1 1 1.06 1.06zm14.5-15.56a.75.75 0 0 0-1.06 0l-1.5 1.5a.75.75 0 0 0 1.06 1.06l1.5-1.5a.75.75 0 0 0 0-1.06m-1.06 15.56a.75.75 0 1 0 1.06-1.06l-1.5-1.5a.75.75 0 1 0-1.06 1.06z"
-							/>
-						</svg>
-					</span>
-
-					<span
-						v-if="
-							current.weathercode == 1 ||
-							current.weathercode === 2 ||
-							current.weathercode === 3
-						"
-						><svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="1em"
-							height="1em"
-							viewBox="0 0 56 56"
-						>
-							<path
-								fill="currentColor"
-								d="M35.986 17.817c.89 0 1.605-.735 1.605-1.605v-4.177c0-.89-.715-1.605-1.605-1.605s-1.605.715-1.605 1.605v4.177c0 .87.716 1.605 1.605 1.605m-11.215 3.732c.638.638 1.682.618 2.282 0c.599-.62.618-1.625 0-2.244l-2.978-2.977a1.593 1.593 0 0 0-2.263 0c-.619.599-.619 1.624 0 2.262Zm20.15 0c.599.618 1.643.638 2.28 0l2.96-2.959c.618-.638.599-1.663 0-2.262a1.593 1.593 0 0 0-2.263 0l-2.978 2.977c-.619.62-.6 1.625 0 2.244m-3.965 17.21c2.842-1.915 4.602-4.873 4.602-8.277a9.55 9.55 0 0 0-9.572-9.59c-3.5 0-6.536 1.875-8.14 4.679c.812.831 1.508 1.74 2.088 2.862c6.38.522 10.5 4.486 11.022 10.326M8.025 49.413h20.923c5.472 0 9.726-4.138 9.726-9.494c0-5.337-4.331-9.36-10.113-9.398c-2.263-4.312-6.285-6.826-10.964-6.826c-6.285 0-11.622 4.892-12.202 11.235C2.108 35.916 0 38.7 0 42.104c0 4.331 3.268 7.31 8.025 7.31m42.194-17.326h4.176c.87 0 1.586-.715 1.605-1.605c0-.89-.735-1.605-1.605-1.605h-4.177c-.87 0-1.605.716-1.605 1.605c0 .89.735 1.605 1.605 1.605m-2.32 12.589a1.61 1.61 0 0 0 2.261-.02c.6-.618.62-1.643 0-2.243l-2.997-2.978c-.618-.599-1.624-.618-2.243 0a1.634 1.634 0 0 0 0 2.282Z"
-							/>
-						</svg>
-					</span>
-					<span v-if="current.weathercode === 45 || current.weathercode === 48">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="1em"
-							height="1em"
-							viewBox="0 0 56 56"
-						>
-							<path
-								fill="currentColor"
-								d="M12.262 37.106h29.086c7.687 0 13.406-5.837 13.406-13.079c0-7.453-6.094-12.914-14.04-12.914c-2.929-5.789-8.366-9.515-15.14-9.515c-8.812 0-16.078 6.89-16.851 15.609c-4.243 1.219-7.477 4.922-7.477 9.867c0 5.531 4.031 10.031 11.016 10.031m-.047-3.774c-4.805 0-7.219-2.672-7.219-6.14c0-2.837 1.64-5.368 5.625-6.422c1.29-.329 1.758-.938 1.875-2.274c.54-7.64 6.281-13.148 13.078-13.148c5.274 0 9.422 2.882 11.953 8.086c.54 1.125 1.242 1.523 2.625 1.523c6.938 0 10.852 4.195 10.852 9.188c0 5.109-4.078 9.187-9.422 9.187ZM43.246 43.48H12.754c-.82 0-1.477.633-1.477 1.5c0 .844.657 1.477 1.477 1.477h30.492c.82 0 1.477-.633 1.477-1.477c0-.867-.657-1.5-1.477-1.5m0 7.97H12.754c-.82 0-1.477.632-1.477 1.476c0 .843.657 1.476 1.477 1.476h30.492c.82 0 1.477-.633 1.477-1.476c0-.844-.657-1.477-1.477-1.477"
-							/>
-						</svg>
-					</span>
-				</div>
-
-				<h3>{{ displayName }}</h3>
-				<h4>{{ weekday[0] }}</h4>
-				<Icon :name="weather" />
-				<p>
-					Aktuelle Temperatur:
-
-					{{ formatter.format(current.temperature) }} °C
-				</p>
-				<p>
-					Wind:
-					{{ formatter.format(current.windspeed) }} km/h
-				</p>
-				<!-- {{ daily }} -->
-			</div>
+			<Current
+				:displayName="displayName"
+				:weekday="weekday"
+				:current="current"
+			></Current>
 		</div>
 	</div>
 	<div v-show="!localError" class="prediction__box" :key="daily">
-		<div class="daily" v-for="(el, index) in weekday">
-			<div class="icon__box">
-				<span v-if="daily.weathercode == 0"
-					><svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="1em"
-						height="1em"
-						viewBox="0 0 24 24"
-					>
-						<path
-							fill="currentColor"
-							d="M12 2a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 12 2m5 10a5 5 0 1 1-10 0a5 5 0 0 1 10 0m4.25.75a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5zM12 19a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 12 19m-7.75-6.25a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5zm-.03-8.53a.75.75 0 0 1 1.06 0l1.5 1.5a.75.75 0 0 1-1.06 1.06l-1.5-1.5a.75.75 0 0 1 0-1.06m1.06 15.56a.75.75 0 1 1-1.06-1.06l1.5-1.5a.75.75 0 1 1 1.06 1.06zm14.5-15.56a.75.75 0 0 0-1.06 0l-1.5 1.5a.75.75 0 0 0 1.06 1.06l1.5-1.5a.75.75 0 0 0 0-1.06m-1.06 15.56a.75.75 0 1 0 1.06-1.06l-1.5-1.5a.75.75 0 1 0-1.06 1.06z"
-						/>
-					</svg>
-				</span>
-
-				<span
-					v-if="
-						daily.weathercode[index] === 1 ||
-						daily.weathercode[index] === 2 ||
-						daily.weathercode[index] === 3
-					"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="1em"
-						height="1em"
-						viewBox="0 0 56 56"
-					>
-						<path
-							fill="currentColor"
-							d="M35.986 17.817c.89 0 1.605-.735 1.605-1.605v-4.177c0-.89-.715-1.605-1.605-1.605s-1.605.715-1.605 1.605v4.177c0 .87.716 1.605 1.605 1.605m-11.215 3.732c.638.638 1.682.618 2.282 0c.599-.62.618-1.625 0-2.244l-2.978-2.977a1.593 1.593 0 0 0-2.263 0c-.619.599-.619 1.624 0 2.262Zm20.15 0c.599.618 1.643.638 2.28 0l2.96-2.959c.618-.638.599-1.663 0-2.262a1.593 1.593 0 0 0-2.263 0l-2.978 2.977c-.619.62-.6 1.625 0 2.244m-3.965 17.21c2.842-1.915 4.602-4.873 4.602-8.277a9.55 9.55 0 0 0-9.572-9.59c-3.5 0-6.536 1.875-8.14 4.679c.812.831 1.508 1.74 2.088 2.862c6.38.522 10.5 4.486 11.022 10.326M8.025 49.413h20.923c5.472 0 9.726-4.138 9.726-9.494c0-5.337-4.331-9.36-10.113-9.398c-2.263-4.312-6.285-6.826-10.964-6.826c-6.285 0-11.622 4.892-12.202 11.235C2.108 35.916 0 38.7 0 42.104c0 4.331 3.268 7.31 8.025 7.31m42.194-17.326h4.176c.87 0 1.586-.715 1.605-1.605c0-.89-.735-1.605-1.605-1.605h-4.177c-.87 0-1.605.716-1.605 1.605c0 .89.735 1.605 1.605 1.605m-2.32 12.589a1.61 1.61 0 0 0 2.261-.02c.6-.618.62-1.643 0-2.243l-2.997-2.978c-.618-.599-1.624-.618-2.243 0a1.634 1.634 0 0 0 0 2.282Z"
-						/>
-					</svg>
-				</span>
-				<span
-					v-if="
-						daily.weathercode[index] === 45 || daily.weathercode[index] === 48
-					"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="1em"
-						height="1em"
-						viewBox="0 0 56 56"
-					>
-						<path
-							fill="currentColor"
-							d="M12.262 37.106h29.086c7.687 0 13.406-5.837 13.406-13.079c0-7.453-6.094-12.914-14.04-12.914c-2.929-5.789-8.366-9.515-15.14-9.515c-8.812 0-16.078 6.89-16.851 15.609c-4.243 1.219-7.477 4.922-7.477 9.867c0 5.531 4.031 10.031 11.016 10.031m-.047-3.774c-4.805 0-7.219-2.672-7.219-6.14c0-2.837 1.64-5.368 5.625-6.422c1.29-.329 1.758-.938 1.875-2.274c.54-7.64 6.281-13.148 13.078-13.148c5.274 0 9.422 2.882 11.953 8.086c.54 1.125 1.242 1.523 2.625 1.523c6.938 0 10.852 4.195 10.852 9.188c0 5.109-4.078 9.187-9.422 9.187ZM43.246 43.48H12.754c-.82 0-1.477.633-1.477 1.5c0 .844.657 1.477 1.477 1.477h30.492c.82 0 1.477-.633 1.477-1.477c0-.867-.657-1.5-1.477-1.5m0 7.97H12.754c-.82 0-1.477.632-1.477 1.476c0 .843.657 1.476 1.477 1.476h30.492c.82 0 1.477-.633 1.477-1.476c0-.844-.657-1.477-1.477-1.477"
-						/>
-					</svg>
-				</span>
-			</div>
-			<h3>{{ el }}</h3>
-			<div class="values">
-				<div class="temp--low">
-					<p>
-						Min.:
-						{{ formatter.format(daily.temperature_2m_min[index]) }} °C | Gefühlt
-						Min.:
-						{{ formatter.format(daily.apparent_temperature_min[index]) }} °C
-					</p>
-
-					<p>
-						Max.:
-						{{ formatter.format(daily.temperature_2m_max[index]) }}
-						°C | Gefühlt Max.:
-						{{ formatter.format(daily.apparent_temperature_max[index]) }}
-						°C
-					</p>
-				</div>
-				<div class="wind">
-					<p>
-						Wind: {{ formatter.format(daily.wind_speed_10m_max[index]) }} km/h
-					</p>
-				</div>
-				<div class="precip">
-					<p>
-						Niederschlag:
-						{{ formatter.format(daily.precipitation_sum[index]) }} mm
-					</p>
-				</div>
-			</div>
-		</div>
+		<Daily :weekday="weekday" :daily="daily"></Daily>
 	</div>
 </template>
 
@@ -271,14 +130,7 @@ parseWeatherData(initData.value);
 daily.value = data.value.daily; */
 
 formattDay(daily.value.time, weekday.value);
-const onClickFetch = async (e) => {
-	myError.value = null;
-	try {
-		const data = await $fetch("/api/error");
-	} catch (error) {
-		myError.value = error;
-	}
-};
+
 // !multiple places
 const chooseOption = async function ($event) {
 	console.log($event.target);
@@ -341,7 +193,7 @@ const updatePlace = async function ($event) {
 	margin: auto;
 }
 .current {
-	background-color: #4c5930;
+	/* background-color: #4c5930; */
 	color: #fcf7f0;
 	padding-block: 5rem;
 
@@ -351,49 +203,13 @@ const updatePlace = async function ($event) {
 .current h3 {
 	letter-spacing: 1px;
 }
-.current__card {
-	width: 300px;
-	margin-inline: auto;
-	display: grid;
-	gap: 1.5rem;
-	padding: 3rem;
-	border-radius: 5px;
-	border: 1px solid #fcf7f0;
-}
-.daily {
-	padding: 3rem;
-	border-radius: 5px;
-	/* margin-bottom: 2rem; */
-	/* border: 3px solid teal; */
-	width: 300px;
-	border: 1px solid #4b592c;
-
-	/* background-color: #264653; */
-	/* background-color: #1c2841; */
-	/* background-color: #4c5930; */
-	/* background-color: #df5139; */
-	/* background-color: #4b592c; */
-	color: #4b592c;
-	/* color: #2a9d8f; */
-	/* background-color: #e9c46a; */
-	/* background-color: #e76f51; */
-}
-.daily p,
-.daily h3 {
-	margin-bottom: 1em;
-}
-.values {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
 
 /* styles input  */
 .search-bar {
-	background-color: #df5139;
+	/* background-color: #df5139; */
 	margin: 0;
 
-	color: #fcf7f0;
+	/* color: #fcf7f0; */
 	padding: 2rem 5rem;
 }
 .form {
@@ -420,7 +236,7 @@ button {
 	cursor: pointer;
 }
 .start {
-	background-color: #4c5930;
+	/* background-color: #4c5930; */
 }
 .options {
 	display: grid;
