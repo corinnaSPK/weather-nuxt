@@ -12,8 +12,8 @@
 body {
 	margin: 0;
 	font-family: "Montserrat", sans-serif;
-	/* background-color: hsl(192, 9%, 10%);
-	background-color: #000e29;
+	/* background-color: hsl(192, 9%, 10%); */
+	/*background-color: #000e29;
 	background-color: rgb(252, 247, 240); */
 	color: #e9c46a;
 	color: #4c5930;

@@ -95,7 +95,7 @@ import { useFormatterInt } from "~/composables/formatter";
 	border-radius: 5px;
 	/* margin-bottom: 2rem; */
 	/* border: 3px solid teal; */
-	width: 300px;
+	width: 320px;
 	border: 1px solid #4b592c;
 
 	/* background-color: #264653; */

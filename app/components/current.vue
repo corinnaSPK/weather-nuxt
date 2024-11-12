@@ -70,12 +70,14 @@ import { useFormatterInt } from "~/composables/formatter";
 
 <style lang="css" scoped>
 .current__card {
-	width: 300px;
+	width: 320px;
 	margin-inline: auto;
 	display: grid;
 	gap: 1.5rem;
 	padding: 3rem;
 	border-radius: 5px;
 	border: 1px solid #fcf7f0;
+	/* border: 1px solid var(bg-green-dark); */
+	/* background-color: var(bg-green-light); */
 }
 </style>

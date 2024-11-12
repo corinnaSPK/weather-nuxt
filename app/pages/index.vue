@@ -11,7 +11,12 @@
 					@keydown.enter="updatePlace"
 					class="text-green-dark"
 				/>
-				<button @click="updatePlace" class="start bg-green-dark">Start</button>
+				<button
+					@click="updatePlace"
+					class="start bg-green-dark cursor-pointer py-2 px-6 tracking-wider rounded-3xl"
+				>
+					Start
+				</button>
 			</div>
 			<div class="options" v-show="multi">
 				<h2>Welchen Ort meinst du?</h2>
@@ -22,6 +27,7 @@
 					:data-lat="res.lat"
 					:data-long="res.lon"
 					:data-display="res.display_name"
+					class="cursor-pointer py-2 px-4 rounded-3xl"
 				>
 					{{ res.display_name }}
 				</button>
@@ -38,14 +44,33 @@
 				:current="current"
 			></Current>
 		</div>
-	</div>
-	<div v-show="!localError" class="prediction__box" :key="daily">
-		<Daily :weekday="weekday" :daily="daily"></Daily>
+		<div v-show="!localError" class="prediction__box" :key="daily">
+			<Daily :weekday="weekday" :daily="daily"></Daily>
+		</div>
+		<iframe
+			data-tally-src="https://tally.so/embed/wd2JNA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+			loading="lazy"
+			width="100%"
+			height="1"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0"
+			title="Buchungsanfrage"
+		></iframe>
 	</div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+// !TALLY
+onMounted(() => {
+	if (Tally) {
+		Tally.loadEmbeds();
+	} else {
+		console.log("no tally");
+	}
+});
+// !TALLY
 // const weather = ref("typcn:weather-stormy");
 const place = ref("Sidney");
 const results = ref(null);
@@ -133,10 +158,6 @@ formattDay(daily.value.time, weekday.value);
 
 // !multiple places
 const chooseOption = async function ($event) {
-	console.log($event.target);
-	console.log($event.target.getAttribute("data-lat"));
-	// console.log($event.target.long);
-	console.log(results.value);
 	latitude.value = $event.target.getAttribute("data-lat");
 	longitude.value = $event.target.getAttribute("data-long");
 	const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`).catch((error) => {
@@ -191,6 +212,7 @@ const updatePlace = async function ($event) {
 	justify-content: center;
 	gap: 3rem;
 	margin: auto;
+	margin-bottom: 100px;
 }
 .current {
 	/* background-color: #4c5930; */
@@ -198,6 +220,9 @@ const updatePlace = async function ($event) {
 	padding-block: 5rem;
 
 	margin-bottom: 5rem;
+	background: radial-gradient(50% 50% at 50% 50%, #75815a 0, #4c5930);
+	/* background: radial-gradient(50% 50% at 50% 50%, #91067e 0, #4c5930); */
+	/* background-color: #4c5930; */
 }
 
 .current h3 {
@@ -230,14 +255,12 @@ input {
 }
 button {
 	color: inherit;
-	border-radius: 50px;
+	/* border-radius: 50px; */
 	border: none;
-	padding: 0.5rem 1rem;
-	cursor: pointer;
+	/* padding: 0.5rem 1rem; */
+	/* cursor: pointer; */
 }
-.start {
-	/* background-color: #4c5930; */
-}
+
 .options {
 	display: grid;
 	place-content: center;
@@ -249,5 +272,14 @@ button {
 	background-color: transparent;
 	border: 1px solid #fcf7f0;
 	margin: 0.5rem;
+}
+
+iframe {
+	border: 3px solid red;
+	padding: 50px;
+	margin: 50px;
+	margin-inline: auto;
+	width: 70%;
+	background-color: rgb(145, 144, 144);
 }
 </style>

@@ -5,7 +5,11 @@ export default defineNuxtConfig({
   compatibilityVersion
 : 4,
 },
-
+app: {
+  head : {
+    script: [{src:"https://tally.so/widgets/embed.js"}]
+  }
+},
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   modules: [
