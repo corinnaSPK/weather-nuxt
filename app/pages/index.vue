@@ -52,7 +52,7 @@
 		</div>
 		<div
 			v-show="!localError"
-			class="flex flex-row flex-wrap justify-center gap-7 mx-auto mb-28"
+			class="flex flex-row flex-wrap justify-center gap-7 mx-auto"
 			:key="daily"
 		>
 			<Daily :weekday="weekday" :daily="daily"></Daily>
@@ -221,5 +221,6 @@ iframe {
 	width: 70%;
 	background-color: rgb(145, 144, 144);
 	background-color: whitesmoke;
+	display: none;
 }
 </style>
