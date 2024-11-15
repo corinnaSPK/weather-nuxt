@@ -1,7 +1,9 @@
 <template>
 	<div>
-		<div class="search-bar bg-orangered text-cream">
-			<div class="form">
+		<div class="search-bar bg-orangered text-cream m-0 py-6 px-14">
+			<div
+				class="form flex flex-row flex-wrap gap-5 justify-center items-center"
+			>
 				<label for="place">Suche nach Ort</label>
 				<input
 					type="input"
@@ -9,7 +11,7 @@
 					v-model="place"
 					placeholder="Ort"
 					@keydown.enter="updatePlace"
-					class="text-green-dark"
+					class="text-green-dark border rounded-3xl border-green-dark py-2 px-6"
 				/>
 				<button
 					@click="updatePlace"
@@ -18,8 +20,8 @@
 					Start
 				</button>
 			</div>
-			<div class="options" v-show="multi">
-				<h2>Welchen Ort meinst du?</h2>
+			<div class="options grid place-content-center m-auto py-5" v-show="multi">
+				<h2 class="mb-5">Welchen Ort meinst du?</h2>
 				<button
 					v-for="res in results"
 					@click="chooseOption"
@@ -27,16 +29,20 @@
 					:data-lat="res.lat"
 					:data-long="res.lon"
 					:data-display="res.display_name"
-					class="cursor-pointer py-2 px-4 rounded-3xl"
+					class="cursor-pointer py-2 px-4 rounded-3xl border border-cream mb-4"
 				>
 					{{ res.display_name }}
 				</button>
 			</div>
-			<div class="error" v-show="localError">
+			<div class="error mt-5" v-show="localError">
 				<p>Etwas ist schiefgelaufen. Bitte versuch es noch einmal</p>
 			</div>
 		</div>
-		<div class="current bg-green-light" :key="current" v-show="!localError">
+		<div
+			class="current py-16 mb-14 text-cream bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-light to-green-dark"
+			:key="current"
+			v-show="!localError"
+		>
 			<!-- {{ results }} -->
 			<Current
 				:displayName="displayName"
@@ -44,7 +50,11 @@
 				:current="current"
 			></Current>
 		</div>
-		<div v-show="!localError" class="prediction__box" :key="daily">
+		<div
+			v-show="!localError"
+			class="flex flex-row flex-wrap justify-center gap-7 mx-auto mb-28"
+			:key="daily"
+		>
 			<Daily :weekday="weekday" :daily="daily"></Daily>
 		</div>
 		<iframe
@@ -204,82 +214,12 @@ const updatePlace = async function ($event) {
 </script>
 
 <style lang="css" scoped>
-.prediction__box {
-	/* border: 1px solid rebeccapurple; */
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: 3rem;
-	margin: auto;
-	margin-bottom: 100px;
-}
-.current {
-	/* background-color: #4c5930; */
-	color: #fcf7f0;
-	padding-block: 5rem;
-
-	margin-bottom: 5rem;
-	background: radial-gradient(50% 50% at 50% 50%, #75815a 0, #4c5930);
-	/* background: radial-gradient(50% 50% at 50% 50%, #91067e 0, #4c5930); */
-	/* background-color: #4c5930; */
-}
-
-.current h3 {
-	letter-spacing: 1px;
-}
-
-/* styles input  */
-.search-bar {
-	/* background-color: #df5139; */
-	margin: 0;
-
-	/* color: #fcf7f0; */
-	padding: 2rem 5rem;
-}
-.form {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	gap: 2rem;
-	align-items: center;
-	justify-content: center;
-}
-.error {
-	margin-top: 2rem;
-}
-input {
-	border: 1px solid #4c5930;
-	border-radius: 50px;
-	padding: 0.5rem 1rem;
-}
-button {
-	color: inherit;
-	/* border-radius: 50px; */
-	border: none;
-	/* padding: 0.5rem 1rem; */
-	/* cursor: pointer; */
-}
-
-.options {
-	display: grid;
-	place-content: center;
-	text-align: center;
-	margin: auto;
-	padding-block: 2rem;
-}
-.options button {
-	background-color: transparent;
-	border: 1px solid #fcf7f0;
-	margin: 0.5rem;
-}
-
 iframe {
-	border: 3px solid red;
 	padding: 50px;
 	margin: 50px;
 	margin-inline: auto;
 	width: 70%;
 	background-color: rgb(145, 144, 144);
+	background-color: whitesmoke;
 }
 </style>
