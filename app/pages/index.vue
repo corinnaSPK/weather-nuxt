@@ -52,7 +52,7 @@
 		</div>
 		<div
 			v-show="!localError"
-			class="flex flex-row flex-wrap justify-center gap-7 mx-auto"
+			class="flex flex-row flex-wrap justify-center gap-7 mx-auto pb-28"
 			:key="daily"
 		>
 			<Daily :weekday="weekday" :daily="daily"></Daily>
@@ -173,13 +173,19 @@ const chooseOption = async function ($event) {
 	const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`).catch((error) => {
 		error.data;
 	});
-
+	// console.log("chooseOPtion starts");
 	parseWeatherData(dataFetch);
+	formattDay(daily.value.time, weekday.value);
+
 	multi.value = false;
 	displayName.value = $event.target.getAttribute("data-display");
+	// console.log(weekday.value);
 };
 // ! Update Long und Lat
 const updatePlace = async function ($event) {
+	weekday.value = [];
+
+	// console.log("updatefunciton triggerd");
 	localError.value = null;
 	const newPLaceNomiData = await $fetch(`${NOMINATIM_BASE_URL.value}`).catch(
 		(error) => {
@@ -187,8 +193,8 @@ const updatePlace = async function ($event) {
 			console.log(error);
 		}
 	);
-
 	results.value = newPLaceNomiData;
+	// console.log("updatefun still running after fetch new lat + lomng");
 
 	if (results.value.length === 0) {
 		localError.value = true;
@@ -208,7 +214,14 @@ const updatePlace = async function ($event) {
 		error.data;
 	});
 
+	// console.log("new weather data updated");
+	// console.log(weekday.value);
+
 	parseWeatherData(dataFetch);
+	formattDay(daily.value.time, weekday.value);
+
+	// console.log(weekday.value);
+	// console.log("update");
 };
 // !update wetter data
 </script>
