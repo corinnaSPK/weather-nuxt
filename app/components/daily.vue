@@ -1,6 +1,6 @@
 <template>
 	<div class="mb-28"></div>
-	<div class="daily text-green-dark" v-for="(el, index) in weekday">
+	<div class="daily text-green-dark mx-3 mb-7" v-for="(el, index) in weekday">
 		<!-- <div class="icon__box">
 				<span v-if="daily.weathercode == 0"
 					><svg

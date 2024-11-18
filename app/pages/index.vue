@@ -52,7 +52,7 @@
 		</div>
 		<div
 			v-show="!localError"
-			class="flex flex-row flex-wrap justify-center gap-7 mx-auto pb-28"
+			class="flex flex-row flex-wrap justify-center mx-auto pb-28"
 			:key="daily"
 		>
 			<Daily :weekday="weekday" :daily="daily"></Daily>
@@ -133,6 +133,7 @@ const formattDay = function (arrayEl, times) {
 		const formattedDate = new Intl.DateTimeFormat("de-de", options).format(
 			date
 		);
+		console.log(formattedDate);
 		times.push(formattedDate);
 	});
 };
