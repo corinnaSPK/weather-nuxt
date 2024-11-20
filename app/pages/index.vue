@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<div class="search-bar bg-orangered text-cream m-0 py-6 px-14">
+		<div class="search-bar bg-orangered text-cream m-0 py-10 px-14">
+			<h1 class="text-center mx-auto mb-8 text-2xl tracking-wider">
+				Wie ist das Wetter in ...?
+			</h1>
 			<div
 				class="form flex flex-row flex-wrap gap-5 justify-center items-center"
 			>
@@ -11,7 +14,7 @@
 					v-model="place"
 					placeholder="Ort"
 					@keydown.enter="updatePlace"
-					class="text-green-dark border rounded-3xl border-green-dark py-2 px-6"
+					class="text-green-dark border rounded-3xl border-green-dark py-2 px-6 bg-cream"
 				/>
 				<button
 					@click="updatePlace"
@@ -38,24 +41,26 @@
 				<p>Etwas ist schiefgelaufen. Bitte versuch es noch einmal</p>
 			</div>
 		</div>
-		<div
-			class="current py-16 mb-14 text-cream bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-light to-green-dark"
-			:key="current"
-			v-show="!localError"
-		>
-			<!-- {{ results }} -->
-			<Current
-				:displayName="displayName"
-				:weekday="weekday"
-				:current="current"
-			></Current>
-		</div>
-		<div
-			v-show="!localError"
-			class="flex flex-row flex-wrap justify-center mx-auto pb-28"
-			:key="daily"
-		>
-			<Daily :weekday="weekday" :daily="daily"></Daily>
+		<div v-if="current">
+			<div
+				class="current py-16 mb-14 text-cream bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-light to-green-dark"
+				:key="current"
+				v-show="!localError"
+			>
+				<!-- {{ results }} -->
+				<Current
+					:displayName="displayName"
+					:weekday="weekday"
+					:current="current"
+				></Current>
+			</div>
+			<div
+				v-show="!localError"
+				class="flex flex-row flex-wrap justify-center gap-7 mx-auto pb-28"
+				:key="daily"
+			>
+				<Daily :weekday="weekday" :daily="daily"></Daily>
+			</div>
 		</div>
 		<iframe
 			data-tally-src="https://tally.so/embed/wd2JNA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
@@ -129,11 +134,14 @@ const formattDay = function (arrayEl, times) {
 			weekday: "long",
 			month: "long",
 			day: "numeric",
+			// hour: "numeric",
+			// minute: "numeric",
+			// second: "numeric",
 		};
 		const formattedDate = new Intl.DateTimeFormat("de-de", options).format(
 			date
 		);
-		console.log(formattedDate);
+		// console.log(formattedDate);
 		times.push(formattedDate);
 	});
 };
@@ -149,80 +157,75 @@ const weather = computed(() => {
 const parseWeatherData = function (fetchData) {
 	current.value = fetchData.current_weather;
 	daily.value = fetchData.daily;
+	return;
 };
 //! Startdaten für 1. Rendern
 const latitude = ref(-33.87403366301516);
 const longitude = ref(151.19970227627627);
+onMounted(async () => {
+	/* const {
+		data: initData,
+		error,
+		refresh,
+	} = await useFetch(`${WEATHER_BASE_URL.value}`);
+
+	parseWeatherData(initData.value);
+	formattDay(daily.value.time, weekday.value);
+	console.log(weekday.value); */
+});
 
 // ! Initial Call Wetter-Api
-const {
+/* const {
 	data: initData,
 	error,
 	refresh,
 } = await useFetch(`${WEATHER_BASE_URL.value}`);
 
 parseWeatherData(initData.value);
-/* current.value = data.value.current_weather;
-daily.value = data.value.daily; */
-
-formattDay(daily.value.time, weekday.value);
-
+formattDay(daily.value.time, weekday.value); */
 // !multiple places
 const chooseOption = async function ($event) {
 	latitude.value = $event.target.getAttribute("data-lat");
 	longitude.value = $event.target.getAttribute("data-long");
-	const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`).catch((error) => {
-		error.data;
-	});
-	// console.log("chooseOPtion starts");
-	parseWeatherData(dataFetch);
-	formattDay(daily.value.time, weekday.value);
+	try {
+		const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`);
+		parseWeatherData(dataFetch);
+		formattDay(daily.value.time, weekday.value);
 
-	multi.value = false;
-	displayName.value = $event.target.getAttribute("data-display");
-	// console.log(weekday.value);
+		multi.value = false;
+		displayName.value = $event.target.getAttribute("data-display");
+	} catch (error) {
+		console.error(error);
+	}
 };
 // ! Update Long und Lat
 const updatePlace = async function ($event) {
 	weekday.value = [];
 
-	// console.log("updatefunciton triggerd");
 	localError.value = null;
-	const newPLaceNomiData = await $fetch(`${NOMINATIM_BASE_URL.value}`).catch(
-		(error) => {
-			error.data;
-			console.log(error);
+	try {
+		const newPLaceNomiData = await $fetch(`${NOMINATIM_BASE_URL.value}`);
+		results.value = newPLaceNomiData;
+		if (results.value.length === 0) {
+			localError.value = true;
+			return;
 		}
-	);
-	results.value = newPLaceNomiData;
-	// console.log("updatefun still running after fetch new lat + lomng");
+		if (results.value.length > 1) {
+			multi.value = true;
 
-	if (results.value.length === 0) {
-		localError.value = true;
-		return;
+			return;
+		}
+		latitude.value = newPLaceNomiData[0].lat;
+		longitude.value = newPLaceNomiData[0].lon;
+		displayName.value = newPLaceNomiData[0].display_name;
+		const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`);
+
+		formattDay(daily.value.time, weekday.value);
+		parseWeatherData(dataFetch);
+		console.log(weekday.value);
+	} catch (error) {
+		console.error(error);
 	}
-	if (results.value.length > 1) {
-		multi.value = true;
-
-		// console.log($event.target);
-
-		return;
-	}
-	latitude.value = newPLaceNomiData[0].lat;
-	longitude.value = newPLaceNomiData[0].lon;
-	displayName.value = newPLaceNomiData[0].display_name;
-	const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`).catch((error) => {
-		error.data;
-	});
-
-	// console.log("new weather data updated");
-	// console.log(weekday.value);
-
-	parseWeatherData(dataFetch);
-	formattDay(daily.value.time, weekday.value);
-
-	// console.log(weekday.value);
-	// console.log("update");
 };
 // !update wetter data
 </script>
