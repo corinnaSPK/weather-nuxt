@@ -125,7 +125,6 @@ function capitalizeFLetter(string) {
 }
 
 // !Zahlen + daten formatieren
-let formatter = new Intl.NumberFormat("de-DE");
 const formattDay = function (arrayEl, times) {
 	arrayEl.forEach((el) => {
 		const date = new Date(el * 1000);
@@ -172,6 +171,14 @@ onMounted(async () => {
 	parseWeatherData(initData.value);
 	formattDay(daily.value.time, weekday.value);
 	console.log(weekday.value); */
+	try {
+		const newDataFetch = await $fetch(`${WEATHER_BASE_URL.value}`);
+		parseWeatherData(newDataFetch);
+		formattDay(daily.value.time, weekday.value);
+	} catch (error) {
+		console.error(error);
+	}
+	console.log(current.value);
 });
 
 // ! Initial Call Wetter-Api
@@ -182,7 +189,9 @@ onMounted(async () => {
 } = await useFetch(`${WEATHER_BASE_URL.value}`);
 
 parseWeatherData(initData.value);
-formattDay(daily.value.time, weekday.value); */
+formattDay(daily.value.time, weekday.value);
+console.log(current.value);
+console.log(daily.value); */
 // !multiple places
 const chooseOption = async function ($event) {
 	latitude.value = $event.target.getAttribute("data-lat");
