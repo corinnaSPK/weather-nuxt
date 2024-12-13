@@ -60,7 +60,6 @@
 			Wind:
 			{{ useFormatterInt(current.windspeed) }} km/h
 		</p>
-		<p>{{ housesData }}</p>
 	</div>
 </template>
 
