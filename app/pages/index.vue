@@ -82,7 +82,6 @@ onMounted(() => {
 	if (Tally) {
 		Tally.loadEmbeds();
 	} else {
-		console.log("no tally");
 	}
 });
 // !TALLY

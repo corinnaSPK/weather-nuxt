@@ -60,12 +60,17 @@
 			Wind:
 			{{ useFormatterInt(current.windspeed) }} km/h
 		</p>
+		<p>{{ housesData }}</p>
 	</div>
 </template>
 
 <script setup>
 const props = defineProps(["current", "displayName", "weekday"]);
 import { useFormatterInt } from "~/composables/formatter";
+
+import housesData from "../data/houses.json";
+
+const houses = ref(housesData);
 </script>
 
 <style lang="css" scoped>
