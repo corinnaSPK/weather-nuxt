@@ -1,5 +1,6 @@
 <template>
-	<div class="current__card">
+	<div
+		class="current__card rounded-md bg-cream text-green-dark shadow-[5px_5px_0px_0px_rgba(0,0,0,0.8)] overflow-hidden text-center pb-12">
 		<!-- <div class="icon__box">
 					<span v-if="current.weathercode == 0"
 						><svg
@@ -47,29 +48,29 @@
 						</svg>
 					</span>
 				</div> -->
-
-		<h3 class="text-2xl">{{ displayName }}</h3>
-		<h4 class="text-xl">{{ weekday[0] }}</h4>
+		<div class="bg-orangered py-6 px-5 text-cream">
+			<h3 class="text-2xl">{{ shortName }}</h3>
+		</div>
+		<h4 class="text-xl">Aktuell</h4>
 		<!-- <Icon :name="weather" /> -->
+		<Icon name="wi:solar-eclipse" width="30" height="30" class="text-6xl" />
 		<p class="text-lg">
-			Aktuell:
-
-			{{ useFormatterInt(current.temperature) }} °C
+			<span class="text-2xl">{{ useFormatterInt(current.temperature) }}</span>
+			°C
 		</p>
+		<Icon name="wi:strong-wind" width="30" height="30" class="text-6xl" />
 		<p class="text-lg">
-			Wind:
-			{{ useFormatterInt(current.windspeed) }} km/h
+			<span class="text-2xl">{{ useFormatterInt(current.windspeed) }}</span>
+			km/h
 		</p>
 	</div>
 </template>
 
 <script setup>
-const props = defineProps(["current", "displayName", "weekday"]);
+const props = defineProps(["current", "displayName", "weekday", "shortName"]);
 import { useFormatterInt } from "~/composables/formatter";
 
-import housesData from "../data/houses.json";
-
-const houses = ref(housesData);
+// console.log(props.displayName);
 </script>
 
 <style lang="css" scoped>
@@ -78,10 +79,13 @@ const houses = ref(housesData);
 	margin-inline: auto;
 	display: grid;
 	gap: 1.5rem;
-	padding: 3rem;
-	border-radius: 5px;
-	border: 1px solid #fcf7f0;
+	/* padding: 3rem; */
+
 	/* border: 1px solid var(bg-green-dark); */
 	/* background-color: var(bg-green-light); */
+}
+
+span {
+	justify-self: center;
 }
 </style>

@@ -1,6 +1,8 @@
 <template>
 	<!-- <div class="mb-28"></div> -->
-	<div class="daily text-green-dark mx-3 mb-7" v-for="(el, index) in weekday">
+	<div
+		class="daily text-green-dark mx-3 mb-7] shadow-[5px_5px_0px_0px_rgba(0,0,0,0.8)] border border-black rounded-md overflow-hidden text-center"
+		v-for="(el, index) in weekday">
 		<!-- <div class="icon__box">
 				<span v-if="daily.weathercode == 0"
 					><svg
@@ -53,33 +55,78 @@
 					</svg>
 				</span>
 			</div> -->
-		<h3 class="text-xl mb-4">{{ el }}</h3>
-		<div class="values text-lg">
-			<div class="temp--low">
-				<p>
-					Min.:
-					{{ useFormatterInt(daily.temperature_2m_min[index]) }} °C <br />
-					Gefühlt :
-					{{ useFormatterInt(daily.apparent_temperature_min[index]) }} °C
-				</p>
 
-				<p>
-					Max.:
-					{{ useFormatterInt(daily.temperature_2m_max[index]) }}
-					°C <br />
-					Gefühlt :
-					{{ useFormatterInt(daily.apparent_temperature_max[index]) }}
-					°C
-				</p>
+		<div class="bg-green-dark py-4 px-5 text-center">
+			<h3 class="text-xl text-cream">{{ el }}</h3>
+		</div>
+		<div class="values text-lg">
+			<div class="values_upper">
+				<div class="values__upper--left border-b border-black p-1 py-3">
+					<Icon
+						name="wi:snowflake-cold"
+						width="30"
+						height="30"
+						class="text-6xl" />
+					<p class="">
+						Temperatur <br />
+						<span class="text-2xl">
+							{{ useFormatterInt(daily.temperature_2m_min[index]) }}
+						</span>
+						°C <br />
+					</p>
+					<p>
+						Gefühlt <br />
+						<span class="text-2xl">
+							{{ useFormatterInt(daily.apparent_temperature_min[index]) }}
+						</span>
+						°C
+					</p>
+				</div>
+				<div
+					class="values__upper--right border-l border-b border-black p-1 py-3">
+					<Icon
+						name="wi:solar-eclipse"
+						width="30"
+						height="30"
+						class="text-6xl" />
+					<p>
+						Temperatur <br />
+						<span class="text-2xl">
+							{{ useFormatterInt(daily.temperature_2m_max[index]) }}
+						</span>
+						°C <br />
+					</p>
+					<p>
+						Gefühlt <br />
+						<span class="text-2xl">
+							{{ useFormatterInt(daily.apparent_temperature_max[index]) }}
+						</span>
+						°C
+					</p>
+				</div>
 			</div>
-			<div class="wind">
-				<p>Wind: {{ useFormatterInt(daily.wind_speed_10m_max[index]) }} km/h</p>
-			</div>
-			<div class="precip">
-				<p>
-					Niederschlag:
-					{{ useFormatterInt(daily.precipitation_sum[index]) }} mm
-				</p>
+			<div class="values_lower">
+				<div class="wind values__lower--left border-b border-black p-1 py-3">
+					<Icon name="wi:strong-wind" width="30" height="30" class="text-6xl" />
+					<p>
+						Wind <br />
+						<span class="text-2xl">
+							{{ useFormatterInt(daily.wind_speed_10m_max[index]) }}
+						</span>
+						km/h
+					</p>
+				</div>
+				<div
+					class="precip values__lower--right border-b border-l border-black p-1 py-3">
+					<Icon name="wi:umbrella" width="30" height="30" class="text-6xl" />
+					<p>
+						Niederschlag <br />
+						<span class="text-2xl">
+							{{ useFormatterInt(daily.precipitation_sum[index]) }}
+						</span>
+						mm
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -87,18 +134,20 @@
 
 <script setup>
 const props = defineProps(["daily", "weekday"]);
+// await console.log(weekday.value);
 import { useFormatterInt } from "~/composables/formatter";
 </script>
 
 <style lang="css" scoped>
 .daily {
-	padding: 3rem;
-	border-radius: 5px;
+	/* padding: 3rem; */
+	/* border-radius: 5px; */
 	/* margin-bottom: 2rem; */
 	/* border: 3px solid teal; */
 	width: 320px;
-	border: 1px solid #4b592c;
-
+	/* border: 1px solid #4b592c; */
+	/* border: 1px solid black; */
+	/* box-shadow: 5px 5px 0 #4b592c; */
 	/* background-color: #264653; */
 	/* background-color: #1c2841; */
 	/* background-color: #4c5930; */
@@ -109,13 +158,12 @@ import { useFormatterInt } from "~/composables/formatter";
 	/* background-color: #e9c46a; */
 	/* background-color: #e76f51; */
 }
-.daily p,
-.daily h3 {
+.daily p {
 	margin-bottom: 1em;
 }
-.values {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
+.values_upper,
+.values_lower {
+	display: grid;
+	grid-template-columns: repeat(2, 50%);
 }
 </style>

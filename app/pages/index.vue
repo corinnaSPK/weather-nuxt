@@ -1,30 +1,31 @@
 <template>
 	<div>
-		<div class="search-bar bg-orangered text-cream m-0 py-10 px-14">
+		<div class="search-bar bg-orangered text-cream m-0 py-16 px-14">
 			<h1 class="text-center mx-auto mb-8 text-2xl tracking-wider">
 				Wie ist das Wetter in ...?
 			</h1>
 			<div
-				class="form flex flex-row flex-wrap gap-5 justify-center items-center"
-			>
-				<label for="place">Suche nach Ort</label>
-				<input
-					type="input"
-					id="place"
-					v-model="place"
-					placeholder="Ort"
-					@keydown.enter="updatePlace"
-					class="text-green-dark border rounded-3xl border-green-dark py-2 px-6 bg-cream"
-				/>
+				class="form flex flex-row flex-wrap gap-5 justify-center items-start">
+				<div class="flex flex-col">
+					<input
+						type="input"
+						id="place"
+						v-model="place"
+						placeholder="Ort"
+						@keydown.enter="updatePlace"
+						class="text-green-dark mb-3 border border-black rounded-md py-2 px-6 bg-cream shadow-[5px_5px_0px_0px_rgba(0,0,0,0.8)]" />
+					<label for="place" class="text-center">Suche nach Ort</label>
+				</div>
 				<button
 					@click="updatePlace"
-					class="start bg-green-dark cursor-pointer py-2 px-6 tracking-wider rounded-3xl"
-				>
+					class="start bg-green-dark cursor-pointer py-2 px-6 tracking-wider border-black rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0,0.8)]">
 					Start
 				</button>
 			</div>
-			<div class="options grid place-content-center m-auto py-5" v-show="multi">
-				<h2 class="mb-5">Welchen Ort meinst du?</h2>
+			<div
+				class="options grid place-content-center m-auto py-5 text-center"
+				v-show="multi">
+				<h2 class="mb-5 text-2xl">Welchen Ort meinst du?</h2>
 				<button
 					v-for="res in results"
 					@click="chooseOption"
@@ -32,8 +33,8 @@
 					:data-lat="res.lat"
 					:data-long="res.lon"
 					:data-display="res.display_name"
-					class="cursor-pointer py-2 px-4 rounded-3xl border border-cream mb-4"
-				>
+					:data-name="res.name"
+					class="cursor-pointer py-2 px-4 rounded-md border border-cream mb-4">
 					{{ res.display_name }}
 				</button>
 			</div>
@@ -43,48 +44,28 @@
 		</div>
 		<div v-if="current">
 			<div
-				class="current py-16 mb-14 text-cream bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-light to-green-dark"
+				class="current py-16 mb-14 text-cream bg-green-dark"
 				:key="current"
-				v-show="!localError"
-			>
-				<!-- {{ results }} -->
+				v-show="!localError">
 				<Current
 					:displayName="displayName"
+					:shortName="shortName"
 					:weekday="weekday"
-					:current="current"
-				></Current>
+					:current="current"></Current>
 			</div>
 			<div
 				v-show="!localError"
-				class="flex flex-row flex-wrap justify-center mx-auto pb-28"
-				:key="daily"
-			>
+				class="flex flex-row flex-wrap justify-center mx-auto gap-12 py-28 max-w-4xl"
+				:key="daily">
 				<Daily :weekday="weekday" :daily="daily"></Daily>
 			</div>
 		</div>
-		<iframe
-			data-tally-src="https://tally.so/embed/wd2JNA?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-			loading="lazy"
-			width="100%"
-			height="1"
-			frameborder="0"
-			marginheight="0"
-			marginwidth="0"
-			title="Buchungsanfrage"
-		></iframe>
 	</div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-// !TALLY
-onMounted(() => {
-	if (Tally) {
-		Tally.loadEmbeds();
-	} else {
-	}
-});
-// !TALLY
+
 // const weather = ref("typcn:weather-stormy");
 const place = ref("Sidney");
 const results = ref(null);
@@ -92,6 +73,7 @@ const multi = ref(false);
 const localError = ref();
 
 const displayName = ref("Sidney");
+const shortName = ref("Sidney");
 const current = ref();
 const daily = ref();
 const weekday = ref([]);
@@ -202,6 +184,7 @@ const chooseOption = async function ($event) {
 
 		multi.value = false;
 		displayName.value = $event.target.getAttribute("data-display");
+		shortName.value = $event.target.getAttribute("data-name");
 	} catch (error) {
 		console.error(error);
 	}
@@ -226,6 +209,8 @@ const updatePlace = async function ($event) {
 		latitude.value = newPLaceNomiData[0].lat;
 		longitude.value = newPLaceNomiData[0].lon;
 		displayName.value = newPLaceNomiData[0].display_name;
+		shortName.value = newPLaceNomiData[0].name;
+		console.log(newPLaceNomiData[0]);
 		const dataFetch = await $fetch(`${WEATHER_BASE_URL.value}`);
 
 		formattDay(daily.value.time, weekday.value);
